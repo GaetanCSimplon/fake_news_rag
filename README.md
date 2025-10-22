@@ -1,7 +1,9 @@
 # fake_news_rag
 Système RAG pour la détection de fake news 
 
+## Structure projet (Modèle C4)
 
+[Schéma projet Fake News Rag](https://www.figma.com/board/Cv7FSdZAQXQ49bazw3m81t/Sans-titre?node-id=0-1&t=elai7Kr7pmQxHEUO-1)
 
 ## Installation
 
@@ -46,6 +48,7 @@ ollama pull llama3.2
 ### Vérifier que le modèle réponde
 
 ```bash
+cd ~/tests
 python test_ollama.py
 ```
 
