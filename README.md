@@ -48,3 +48,30 @@ ollama pull llama3.2
 ```bash
 python test_ollama.py
 ```
+
+## Architecture du projet
+
+```
+rag-fake-news/
+├─ data/
+│  ├─ raw/                 # Données brutes
+│  │   ├─ true.csv
+│  │   └─ fake.csv
+│  └─ processed/           # Données nettoyées pour l'embedding
+├─ src/
+│  ├─ preprocessing.py
+│  ├─ embedding.py
+│  ├─ storage_chroma.py
+│  ├─ retrieval.py
+│  ├─ rag_pipeline.py
+│  └─ cli.py
+├─ tests/                    # Destiné aux tests
+│  ├─ test_preprocessing.py
+│  ├─ test_embedding.py
+│  ├─ test_retrieval.py
+│  └─ ...
+├─ notebooks/
+├─ requirements.txt
+└─ README.md
+
+```
