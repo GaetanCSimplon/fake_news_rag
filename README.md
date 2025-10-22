@@ -9,12 +9,12 @@ Système RAG pour la détection de fake news
 ### C1 - Contexte système
 ```mermaid
 graph TD
-    U[Utilisateur] -->|Pose une question sur une information| RAG[RAG Fake News App]
+    U[Utilisateur] -->|Pose une question| RAG[RAG Fake News App]
     RAG -->|Recherche contextuelle| LLM[Ollama LLM local]
-    RAG -->|Interroge| DB[ChromaDB (base vectorielle locale)]
+    RAG -->|Interroge| DB[ChromaDB - base vectorielle locale]
     DB --> RAG
     LLM --> RAG
-    RAG -->|Renvoie une réponse| U
+    RAG -->|Renvoie une reponse| U
 
 ```
 ### C2 - Containers
@@ -22,10 +22,10 @@ graph TD
 ```mermaid
 graph TD
     U[Utilisateur] --> CLI[Interface CLI]
-    CLI --> PRE[Preprocessing\nNettoyage et Tokenisation]
-    PRE --> EMB[Embedding\nVectorisation des textes]
-    EMB --> CHROMA[ChromaDB\nStockage vectoriel]
-    CHROMA --> RETRIEVAL[Retrieval\nRecherche de contexte]
+    CLI --> PRE[Preprocessing - Nettoyage et Tokenisation]
+    PRE --> EMB[Embedding - Vectorisation des textes]
+    EMB --> CHROMA[ChromaDB - Stockage vectoriel]
+    CHROMA --> RETRIEVAL[Retrieval - Recherche de contexte]
     RETRIEVAL --> LLM[Ollama LLM local]
     LLM --> REP[Réponse générée]
     REP --> CLI
