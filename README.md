@@ -3,7 +3,75 @@ Système RAG pour la détection de fake news
 
 ## Structure projet (Modèle C4)
 
+### Visualisation figma
 [Schéma projet Fake News Rag](https://www.figma.com/board/Cv7FSdZAQXQ49bazw3m81t/Sans-titre?node-id=0-1&t=elai7Kr7pmQxHEUO-1)
+
+### C1 - Contexte système
+```mermaid
+graph TD
+    U[Utilisateur] -->|Envoie une actualité| APP[Fake News RAG]
+    APP -->|Récupère des passages similaires| CH[Base vectorielle Chroma]
+    APP -->|Analyse la crédibilité via prompt| LLM[Modèle Ollama (LLM local)]
+    CH -->|Retourne des textes proches| APP
+    LLM -->|Retourne l'analyse| APP
+    APP -->|Affiche la crédibilité| U
+
+```
+### C2 - Containers
+
+```mermaid
+graph TD
+    subgraph Utilisateur
+        CLI[CLI / Interface utilisateur]
+    end
+
+    subgraph System[Fake News RAG]
+        RAG[RAG Engine]
+        CHROMA[ChromaDB (Stockage vectoriel)]
+        DATA[(Dataset CSV)]
+    end
+
+    subgraph External[Services externes]
+        OLLAMA[Ollama (LLM local)]
+    end
+
+    CLI --> RAG
+    RAG --> CHROMA
+    RAG --> OLLAMA
+    RAG --> DATA
+
+```
+
+### C3 - Composants internes
+
+```mermaid
+graph TD
+    subgraph RAGEngine[RAG Engine]
+        PRE[Preprocessor<br>(nettoyage, tokenisation)]
+        EMB[Embedder<br>(vectorisation des textes)]
+        STORE[VectorStoreManager<br>(interaction avec Chroma)]
+        RET[Retriever<br>(recherche sémantique)]
+        GEN[Generator<br>(construction du prompt + appel LLM)]
+    end
+
+    PRE --> EMB
+    EMB --> STORE
+    STORE --> RET
+    RET --> GEN
+
+```
+
+### C4 - Vue Code
+
+```mermaid
+graph TD
+    CLI_PY[cli.py] --> RAG_PY[rag_pipeline.py]
+    RAG_PY --> RETRIEVE_PY[retrieval.py]
+    RAG_PY --> EMBED_PY[embedding.py]
+    RAG_PY --> STORE_PY[storage_chroma.py]
+    RAG_PY --> PREPROCESS_PY[preprocessing.py]
+
+```
 
 ## Installation
 
