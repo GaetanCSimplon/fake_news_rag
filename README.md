@@ -64,6 +64,34 @@ graph TD
 
 ```
 
+## Diagramme de séquence
+
+```mermaid
+sequenceDiagram
+    participant U as Utilisateur
+    participant CLI as Interface CLI / App
+    participant PRE as Preprocessing
+    participant CH as ChromaDB
+    participant EMB as Embeddings (Ollama)
+    participant LLM as LLM (Ollama)
+
+    U->>CLI: Saisit une question
+    CLI->>PRE: Nettoie et tokenise la requete
+    PRE-->>CLI: Requete pretraitee
+
+    CLI->>EMB: Genere un vecteur pour la requete
+    EMB-->>CLI: Retourne le vecteur d embedding
+
+    CLI->>CH: Recherche les documents similaires
+    CH-->>CLI: Retourne les passages les plus pertinents
+
+    CLI->>LLM: Envoie la question + contexte pertinent
+    LLM-->>CLI: Genere une reponse contextuelle
+
+    CLI-->>U: Affiche la reponse finale
+
+```
+
 ## Installation
 
 ### Créer un environnement virtuel
