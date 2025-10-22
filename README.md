@@ -9,56 +9,47 @@ Système RAG pour la détection de fake news
 ### C1 - Contexte système
 ```mermaid
 graph TD
-    U[Utilisateur] -->|Envoie une actualité| APP[Fake News RAG]
-    APP -->|Récupère des passages similaires| CH[Base vectorielle Chroma]
-    APP -->|Analyse la crédibilité via prompt| LLM[Modèle Ollama (LLM local)]
-    CH -->|Retourne des textes proches| APP
-    LLM -->|Retourne l'analyse| APP
-    APP -->|Affiche la crédibilité| U
+    U[Utilisateur] -->|Pose une question sur une information| RAG[RAG Fake News App]
+    RAG -->|Recherche contextuelle| LLM[Ollama LLM local]
+    RAG -->|Interroge| DB[ChromaDB (base vectorielle locale)]
+    DB --> RAG
+    LLM --> RAG
+    RAG -->|Renvoie une réponse| U
 
 ```
 ### C2 - Containers
 
 ```mermaid
 graph TD
-    subgraph Utilisateur
-        CLI[CLI / Interface utilisateur]
-    end
-
-    subgraph System[Fake News RAG]
-        RAG[RAG Engine]
-        CHROMA[ChromaDB (Stockage vectoriel)]
-        DATA[(Dataset CSV)]
-    end
-
-    subgraph External[Services externes]
-        OLLAMA[Ollama (LLM local)]
-    end
-
-    CLI --> RAG
-    RAG --> CHROMA
-    RAG --> OLLAMA
-    RAG --> DATA
-
+    U[Utilisateur] --> CLI[Interface CLI]
+    CLI --> PRE[Preprocessing\nNettoyage et Tokenisation]
+    PRE --> EMB[Embedding\nVectorisation des textes]
+    EMB --> CHROMA[ChromaDB\nStockage vectoriel]
+    CHROMA --> RETRIEVAL[Retrieval\nRecherche de contexte]
+    RETRIEVAL --> LLM[Ollama LLM local]
+    LLM --> REP[Réponse générée]
+    REP --> CLI
 ```
 
 ### C3 - Composants internes
 
 ```mermaid
 graph TD
-    subgraph RAGEngine[RAG Engine]
-        PRE[Preprocessor<br>(nettoyage, tokenisation)]
-        EMB[Embedder<br>(vectorisation des textes)]
-        STORE[VectorStoreManager<br>(interaction avec Chroma)]
-        RET[Retriever<br>(recherche sémantique)]
-        GEN[Generator<br>(construction du prompt + appel LLM)]
+    subgraph src/
+        CLI[cli.py\nInterface utilisateur]
+        PIPE[rage_pipeline.py\nCoordination du flux RAG]
+        PRE[preprocessing.py\nNettoyage et tokenisation]
+        EMB[embedding.py\nGénération des embeddings]
+        CH[storage_chroma.py\nGestion de la base vectorielle]
+        RETR[retrieval.py\nRecherche des documents pertinents]
     end
 
-    PRE --> EMB
-    EMB --> STORE
-    STORE --> RET
-    RET --> GEN
-
+    CLI --> PIPE
+    PIPE --> PRE
+    PIPE --> EMB
+    PIPE --> CH
+    PIPE --> RETR
+    PIPE --> CLI
 ```
 
 ### C4 - Vue Code
