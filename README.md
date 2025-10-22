@@ -2,7 +2,8 @@
 Système RAG pour la détection de fake news 
 
 ## Structure projet (Modèle C4)
-
+<details>
+    <summary> Modèle C4 </summary>
 ### Visualisation figma
 [Schéma projet Fake News Rag](https://www.figma.com/board/Cv7FSdZAQXQ49bazw3m81t/Sans-titre?node-id=0-1&t=elai7Kr7pmQxHEUO-1)
 
@@ -63,7 +64,7 @@ graph TD
     RAG_PY --> PREPROCESS_PY[preprocessing.py]
 
 ```
-
+</details>
 ## Diagramme de séquence
 
 ```mermaid
