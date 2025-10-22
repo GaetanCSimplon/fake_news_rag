@@ -36,12 +36,12 @@ graph TD
 ```mermaid
 graph TD
     subgraph src/
-        CLI[cli.py\nInterface utilisateur]
-        PIPE[rage_pipeline.py\nCoordination du flux RAG]
-        PRE[preprocessing.py\nNettoyage et tokenisation]
-        EMB[embedding.py\nGénération des embeddings]
-        CH[storage_chroma.py\nGestion de la base vectorielle]
-        RETR[retrieval.py\nRecherche des documents pertinents]
+        CLI[cli.py - Interface utilisateur]
+        PIPE[rage_pipeline.py - Coordination du flux RAG]
+        PRE[preprocessing.py - Nettoyage et tokenisation]
+        EMB[embedding.py - Génération des embeddings]
+        CH[storage_chroma.py - Gestion de la base vectorielle]
+        RETR[retrieval.py - Recherche des documents pertinents]
     end
 
     CLI --> PIPE
