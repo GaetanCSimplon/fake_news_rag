@@ -1,11 +1,20 @@
 from src.preprocessing import CSVLoader, DataCleaner, TextChunker
+from pathlib import Path
+
+
+
+path_true = Path("data/raw/True.csv")
+path_fake = Path("data/raw/Fake.csv")
+
+
+
 
 
 
 if __name__ == "__main__":
     loader = CSVLoader()
-    df_true = loader.load_csv("~/fake_news_rag/data/raw/True.csv")
-    df_fake = loader.load_csv("~/fake_news_rag/data/raw/Fake.csv")
+    df_true = loader.load_csv(path_true)
+    df_fake = loader.load_csv(path_fake)
     # data cleaning
     # Initialize cleaner with a DataFrame
     cleaner = DataCleaner(df_true)
