@@ -70,13 +70,13 @@ class OllamaEmbedder:
         tqdm.pandas()
 
         # Découpage en chunks
-        df["chunks"] = df[text_col].progress_apply(self._split_text) 
+        df["chunks"] = df[text_col].progress_apply(self.split_text) 
 
         # Pour chaque chunk, créer un embedding
         embeddings_data = []
         for i, chunks in enumerate(tqdm(df["chunks"], desc="Génération des embeddings", ncols=80)):
             for chunk in chunks:
-                emb = self._embed_text(chunk)
+                emb = self.embed_texts(chunk)
                 embeddings_data.append({
                     "index_article": i,
                     "chunk": chunk,
