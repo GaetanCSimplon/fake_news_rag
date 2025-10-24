@@ -58,6 +58,14 @@ class DataCleaner:
         """
         self.df = df
         print(f"[INFO] DataCleaner initialized with DataFrame shape: {self.df.shape}")
+    
+    # Labelling
+    def add_label(self, label: int):
+        """
+        Add column "label" where 0 = fake 1 = True
+        """
+        self.df["label"] = label
+        print(f"[INFO] Label '{label}' added to {len(self.df)} lines.")
 
     def drop_empty_rows_and_duplicated(self):
         """
@@ -66,7 +74,7 @@ class DataCleaner:
         """
         before_shape = self.df.shape
         self.df = self.df.dropna(subset=['text', 'subject', 'date'])
-        self.df = self.df.drop_duplicates(subset=['text'])
+        self.df = self.df.drop_duplicates(subset=['text'], keep="first")
         after_shape = self.df.shape
         print(f"[INFO] drop_empty_rows_and_duplicated: before {before_shape}, after {after_shape}")
         return self
@@ -176,8 +184,6 @@ class TextChunker:
             return []
 
         words = text.split()
-        total_words = len(words)
-        print(f"[INFO] Texte reçu ({total_words} mots). Début du découpage...")
         chunks = []
         start = 0
         chunk_count = 0
@@ -189,16 +195,22 @@ class TextChunker:
             if len(chunk.split()) > 10:  # éviter les mini-chunks
                 chunks.append(chunk)
                 chunk_count += 1
-                print(f"  → Chunk {chunk_count} créé ({len(chunk.split())} mots) "
-                      f"[de {start} à {min(end, total_words)}]")
-
 
             if end >= len(words): # Si la fin du texte est supérieure à la longueur du texte, on arrête la boucle
-                print(f"[FIN] Fin du texte atteinte après {chunk_count} chunks.")
                 break  # fin propre
 
             start += self.chunk_size - self.overlap # avance avec chevauchement
-            
-        print(f"[RÉSULTAT] {chunk_count} chunks générés pour ce texte.\n")
 
         return chunks
+    
+class DatasetMerger:
+    """
+    Merge multiple dataframes.
+    """
+    @staticmethod
+    def merge(dfs: List[pd.DataFrame]) -> pd.DataFrame:
+        combined = pd.concat(dfs, ignore_index=True)
+        print(f"[INFO] Merge done.")
+        return combined
+        
+    
