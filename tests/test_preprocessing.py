@@ -1,7 +1,7 @@
 import os
 import pandas as pd
 import pytest
-from src.preprocessing import CSVLoader, DataCleaner, TextChunker
+from src.preprocessing import CSVLoader, DataCleaner
 
 
 # -------------------------------
@@ -90,27 +90,3 @@ def test_save_csv(tmp_path, sample_df):
     assert output_file.exists()
 
 
-# -------------------------------
-# TESTS TextChunker
-# -------------------------------
-def test_split_text_basic():
-    text = " ".join(["word"] * 350)  # 350 mots
-    chunker = TextChunker(chunk_size=300, overlap=50)
-    chunks = chunker.split_text(text)
-
-    assert isinstance(chunks, list)
-    assert len(chunks) == 2  # Devrait faire 2 chunks
-    assert all(len(c.split()) <= 300 for c in chunks)
-
-
-def test_split_text_empty():
-    chunker = TextChunker()
-    chunks = chunker.split_text("")
-    assert chunks == []
-
-
-def test_split_text_short_text():
-    text = "short text example"
-    chunker = TextChunker(chunk_size=10)
-    chunks = chunker.split_text(text)
-    assert len(chunks) == 0  # moins de 10 mots, filtré par le if > 10

@@ -4,6 +4,7 @@ import re
 import os
 from typing import List
 
+
 class DataLoader(ABC):
     """
     Abstract base class for data loading.
@@ -66,6 +67,7 @@ class DataCleaner:
         """
         self.df["label"] = label
         print(f"[INFO] Label '{label}' added to {len(self.df)} lines.")
+        return self
 
     def drop_empty_rows_and_duplicated(self):
         """
@@ -154,54 +156,7 @@ class DataCleaner:
         """
         print(f"cleand data : \n{self.df}")
         return self.df
-
-## Class to chunk the text
-
-
-class TextChunker:
-    """
-    Découpe un texte long en plusieurs morceaux (chunks) pour le passage à l'embedding.
-    """
     
-    def __init__(self, chunk_size: int = 300, overlap: int = 50):
-        """
-        :param chunk_size: nombre de mots par chunk
-        :param overlap: nombre de mots partagés entre deux chunks
-        """
-        self.chunk_size = chunk_size
-        self.overlap = overlap
-        print(f"[INIT] TextChunker initialisé avec chunk_size={chunk_size}, overlap={overlap}")
-
-    def split_text(self, text: str) -> List[str]:
-        """
-        Découpe le texte en plusieurs chunks avec chevauchement.
-
-        :param text: texte à découper
-        :return: liste de chunks
-        """
-        if not isinstance(text, str) or not text.strip(): # Vérifie si le texte est une chaine de caractères et non vide
-            print("[AVERTISSEMENT] Texte vide ou invalide — aucun chunk créé.")
-            return []
-
-        words = text.split()
-        chunks = []
-        start = 0
-        chunk_count = 0
-
-        while start < len(words): # Tant que le début du texte est inférieur à la longueur du texte
-            end = start + self.chunk_size
-            chunk = " ".join(words[start:end]) # Découpe le texte en chunks
-
-            if len(chunk.split()) > 10:  # éviter les mini-chunks
-                chunks.append(chunk)
-                chunk_count += 1
-
-            if end >= len(words): # Si la fin du texte est supérieure à la longueur du texte, on arrête la boucle
-                break  # fin propre
-
-            start += self.chunk_size - self.overlap # avance avec chevauchement
-
-        return chunks
     
 class DatasetMerger:
     """
