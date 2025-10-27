@@ -79,32 +79,4 @@ class ChromaStorage:
 
         print(f"[SUCCÈS] {total} documents insérés dans la collection '{self.collection_name}'.")
 
-    # --------------------------------------------------
-    # Requête sémantique (pour tester)
-    # --------------------------------------------------
-    def query(self, text_query: str, n_results: int = 3):
-        """
-        Recherche les documents les plus similaires à une requête texte.
-        """
-        results = self.collection.query(query_texts=[text_query], n_results=n_results)
-        print("\n[RESULTATS DE RECHERCHE]")
-        for doc, meta, dist in zip(results['documents'][0], results['metadatas'][0], results['distances'][0]):
-            print(f"Distance: {dist:.4f} | Label: {meta.get('label')} | Date: {meta.get('date')}")
-            print(f"→ {doc[:200]}...\n")  # Affiche un extrait du chunk
 
-
-# if __name__ == "__main__":
-#     # --- Exemple d'utilisation ---
-#     storage = ChromaStorage(
-#         persist_dir="data/vector_db",
-#         collection_name="news_articles"
-#     )
-
-#     # 1️⃣ Charger le CSV final
-#     df = storage.load_embedded_data("data/processed/embedded_chunks_normalized.csv")
-
-#     # 2️⃣ Insérer dans Chroma
-#     storage.insert_into_chroma(df)
-
-#     # 3️⃣ Tester une requête sémantique
-#     storage.query("government announces new policy on climate change", n_results=3)
