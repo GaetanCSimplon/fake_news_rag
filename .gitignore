@@ -1,6 +1,8 @@
 # fichiers de test perso
-
+create_bdd.py
 test_pipeline.py
+test_storage_chroma.py
+
 # Dossier données
 data/
 notebooks/

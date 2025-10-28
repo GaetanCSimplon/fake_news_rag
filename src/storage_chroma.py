@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 import chromadb
-from chromadb.config import Settings
+# from chromadb.config import Settings
 from tqdm import tqdm
 
 class ChromaStorage:

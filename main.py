@@ -1,27 +1,54 @@
 from src.rag_pipeline import RAGPipeline
+from src.storage_chroma import ChromaStorage
+from datetime import datetime
 
-if __name__ == "__main__":
-    # Initialisation du pipeline complet
-    pipeline = RAGPipeline(
-        chroma_path="data/vector_db",
-        collection_name="articles",
-        embedding_model="all-minilm"
+# === CONFIGURATION ===
+CHROMA_PATH = "data/vector_db"
+COLLECTION_NAME = "articles"
+EMBEDDING_MODEL = "all-minilm"
+GENERATION_MODEL = "llama3.2"
+
+
+def ask_user_article():
+    """
+    Demande à l'utilisateur d'entrer un article à analyser.
+    """
+    print("\n=== Analyse d'article ===")
+    print("Colle ton article ci-dessous (finis par une ligne vide) :")
+    lines = []
+    while True:
+        line = input()
+        if line.strip() == "":
+            break
+        lines.append(line)
+    return "\n".join(lines)
+
+
+def main():
+    print("=== Système RAG Fake News ===")
+
+    # Initialisation du pipeline RAG
+    rag = RAGPipeline(
+        chroma_path=CHROMA_PATH,
+        collection_name=COLLECTION_NAME,
+        embedding_model=EMBEDDING_MODEL
     )
 
-    # Exemple de texte utilisateur
-    user_article = """
-   Title: "Scientists Discover Plant That Turns Air Into Gasoline: Fossil Fuels to Be Obsolete by 2026!"
-    Subtitle: "A secret team of Swiss researchers claims to have unlocked the ultimate green energy solution."
-    Geneva, October 28, 2025 — A team of researchers at the Swiss Institute of Green Technologies (SIGT) announced yesterday a groundbreaking discovery: a genetically modified plant, dubbed "Petrolia Mirabilis," capable of converting carbon dioxide (CO₂) from the air into high-quality synthetic gasoline. According to Dr. Hans Müller, the project lead, "This plant can produce up to 500 liters of gasoline per year, with zero negative environmental impact."
-    Initial tests, conducted in secret in the Swiss Alps, reportedly showed that "Petrolia Mirabilis" grows at an unprecedented rate and requires minimal water. "In less than six months, we achieved results beyond our wildest expectations," Müller stated during an impromptu press conference. "By 2026, we could replace 80% of the world's fossil fuels."
-    The announcement sparked immediate excitement among governments and investors. French President Emmanuel Macron allegedly pledged €10 billion to cultivate the plant in France. "This is the miracle solution we’ve been waiting for to combat climate change," he told reporters.
-    However, skeptics abound. "No scientific publication supports these claims," noted Prof. Sophie Laurent, a biologist at the University of Paris. "Moreover, converting CO₂ into gasoline would violate fundamental laws of thermodynamics." Rumors also suggest the plant may produce undetectable toxic gases as a byproduct.
-    The SIGT refused to provide samples or concrete evidence, citing "national security concerns." Despite this, countries like China and the U.S. have reportedly ordered millions of plants.
-    Stay tuned for updates.
-    """
+    # Initialisation du stockage Chroma
+    storage = ChromaStorage(
+        persist_dir=CHROMA_PATH,
+        collection_name=COLLECTION_NAME
+    )
 
-    # Lancement de l’analyse
-    result = pipeline.analyze_article(user_article, model_name="llama3.2", n_results=3)
-    
-    print("====== Réponse =======")
+    # Étape 1 : Récupération du texte utilisateur
+    article_text = ask_user_article()
+
+    # Étape 2 : Analyse via le pipeline RAG
+    print("\n[INFO] Lancement de l'analyse RAG...")
+    result = rag.analyze_article(article_text, model_name=GENERATION_MODEL, n_results=3)
+    print("\n====== RÉPONSE DU MODÈLE ======")
     print(result.strip())
+
+
+if __name__ == "__main__":
+    main()
