@@ -21,7 +21,7 @@ class RAGPipeline:
             collection_name (str): Nom de la collection à interroger ("news_articles")
             embedding_model (str): Nom du modèle d'embedding ("all-minilm).
         """
-        print(f"[INITI] Initialisation du pipeline RAG avec modèle '{embedding_model}'...")
+        print(f"[INIT] Initialisation du pipeline RAG avec modèle '{embedding_model}'...")
         self.embebber = OllamaEmbedder(model_name=embedding_model)
         self.retriever = RAGAnalyzer(chroma_path, collection_name, embedding_model)
         

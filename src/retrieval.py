@@ -1,9 +1,9 @@
 import numpy as np
 import ollama
 import chromadb
-from chromadb.utils import embedding_functions
+# from chromadb.utils import embedding_functions
 from tqdm import tqdm
-from src.embedding import OllamaEmbedder
+# from src.embedding import OllamaEmbedder
 
 class RAGAnalyzer:
     """
@@ -45,6 +45,8 @@ class RAGAnalyzer:
         print(f"\n[INFO] {len(docs)} documents similaires retrouvés :")
         for d, dist in zip(docs, distances):
             print(f" - distance={dist:.4f}")
+            print(f" - extrait={d}")
+            
         return docs, metas
     
     # Création du contexte
@@ -53,6 +55,7 @@ class RAGAnalyzer:
         Assemble les chunks retrouvés en un texte de contexte.
         """
         context = "\n\n".join([f"[{m.get('date', 'unknown')}] ({m.get('label', '?')}): {doc}" for doc, m in zip(docs, metas)])
+        print(f"[CONTEXT] {context}")
         return context
     
     # Création du prompt
