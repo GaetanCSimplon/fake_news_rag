@@ -1,8 +1,9 @@
 import numpy as np
 import ollama
 import chromadb
-from chromadb.utils import embedding_functions
+# from chromadb.utils import embedding_functions
 from tqdm import tqdm
+from src import embedding
 from src.embedding import OllamaEmbedder
 
 class RAGAnalyzer:
@@ -17,20 +18,18 @@ class RAGAnalyzer:
         self.collection = self.client.get_collection(collection_name)
         print(f"[INFO] Collection '{collection_name}' chargée depuis '{chroma_path}'")
         # Initialisation de l'embeddeur
-        self.embedding_model = embedding_model
+        self.embedder = OllamaEmbedder(model_name=embedding_model)
     
     # Vectorisation et normalisation du texte utilisateur
     def vectorize_query(self, text: str) -> list:
         """
         Vectorise et normalise le texte utilisateur (sans chunking)
         """
-        response = ollama.embeddings(model=self.embedding_model, prompt=text)
-        # Normalisation
-        vec = np.array(response.embedding)
-        norm = np.linalg.norm(vec)
-        if norm > 0:
-            vec = vec /norm
-        return vec.tolist()
+        if not text.strip():
+            raise ValueError("Texte utilisateur vide")
+        embeddings = self.embedder.embed_texts([text])
+        return embeddings[0] if embeddings else []
+
     
     # Recherche dans la base vectorielle de documents similaires
     def retrieve_similar_docs(self, query_vector, n_results=5):
@@ -45,6 +44,8 @@ class RAGAnalyzer:
         print(f"\n[INFO] {len(docs)} documents similaires retrouvés :")
         for d, dist in zip(docs, distances):
             print(f" - distance={dist:.4f}")
+            print(f" - extrait={d}")
+            
         return docs, metas
     
     # Création du contexte
@@ -53,6 +54,7 @@ class RAGAnalyzer:
         Assemble les chunks retrouvés en un texte de contexte.
         """
         context = "\n\n".join([f"[{m.get('date', 'unknown')}] ({m.get('label', '?')}): {doc}" for doc, m in zip(docs, metas)])
+        print(f"[CONTEXT] {context}")
         return context
     
     # Création du prompt
