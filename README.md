@@ -142,12 +142,13 @@ rag-fake-news/
 ### Traitement -> Vectorisation -> Création & Insertion des données
 
 La première étape consiste à créer un dossier data sous la forme :
-
+```
 ├─ data/
 │  ├─ raw/                 # Données brutes
 │  │   ├─ true.csv
 │  │   └─ fake.csv
 │  └─ processed/           # Dossiers accueillant les données traitées
+```
 
 Dans le dossier data/raw/, insérer les csv True et Fake 
 [Lien vers les datasets](https://www.kaggle.com/datasets/clmentbisaillon/fake-and-real-news-dataset/data)
