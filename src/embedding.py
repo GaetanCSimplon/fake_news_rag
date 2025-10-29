@@ -43,7 +43,7 @@ class OllamaEmbedder:
         while start < len(words):
             end = start + self.chunk_size
             chunk = " ".join(words[start:end])
-            if len(chunk.split()) > 10:
+            if len(chunk.split()) > 5:
                 chunks.append(chunk)
             if end >= len(words):
                 break
@@ -67,8 +67,8 @@ class OllamaEmbedder:
         """Crée des embeddings normalisés pour une liste de textes (en parallèle)."""
 
         def embed_one(text):
-            response = ollama.embeddings(model=self.model_name, prompt=text)
-            return self.normalize_vector(response.embedding)
+            response = ollama.embed(model=self.model_name, input=text)
+            return self.normalize_vector(response.get("embeddings"))
 
         embeddings = []
         with ThreadPoolExecutor(max_workers=max_workers) as executor:

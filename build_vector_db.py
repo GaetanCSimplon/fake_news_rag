@@ -49,8 +49,8 @@ if __name__ == "__main__":
     if not os.path.exists(output_path):
         print("\n[INFO] Démarrage de la vectorisation avec Ollama...")
         try:
-            embedder = OllamaEmbedder(model_name="all-minilm", chunk_size=300, overlap=30)
-            embedded_df = embedder.embed_dataframe(combined_df, text_col="text", output_path=output_path)
+            embedder = OllamaEmbedder(model_name="all-minilm", chunk_size=100, overlap=30)
+            embedded_df = embedder.embed_dataframe(combined_df[:1000], text_col="text", output_path=output_path)
         except Exception as e:
             print(f"[ERREUR] Échec de la vectorisation : {e}")
             exit(1)
