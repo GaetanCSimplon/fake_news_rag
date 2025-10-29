@@ -133,11 +133,20 @@ rag-fake-news/
 │  └─ ...
 ├─ notebooks/
 ├─ main.py                 # Script de lancement du CLI / Démarrage de l'app
+├─ app.py                  # Module de création de l'interface streamlit (disponible sur la branche new_branch)
 ├─ requirements.txt
 └─ README.md
 
 ```
+
+- Il subsiste des différences d'architecture et de code en fonction des branches consultés.
+- La branche explo_get est dédiée à l'utilisation de détecteur depuis une interface en ligne de commande.
+- La branche développée par Emese (new_branch) est dédiée au développement d'une interface streamlit.
 ## Procédures
+
+## Via Command Line Interface (CLI)
+
+Disponible sur la branche explo_get
 
 ### Traitement -> Vectorisation -> Création & Insertion des données
 
@@ -162,27 +171,35 @@ Une fois le dossier data en place, il est désormais possible de lancer le pipel
 
 **Le processus de vectorisation est susceptible de prendre beaucoup temps (~1h) selon la puissance de votre machine.**
 
-```bash
-~/src
-python build_vector_db.py
-
-```
 
 ### Système RAG
 
-```bash
-~/fake_news_rag
+```
 python main.py
-
 ```
 
-Au lancement du script depuis le terminal, l'utilisateur devra copier l'article.
--> Appuyez sur ENTREE pour confirmer le collage
+Appuyer sur 1 pour la création de la base vectorielle
+Appuyer sur 2 pour faire une détection
 
-Le système RAG se lance et va mettre en relation le prompt/article utilisateur avec la base vectorielle et retournera
-un ensemble de 3 documents similaires.
+## Détection via CLI
 
-Le corps de la réponse est construit ainsi :
+- Coller le texte correspondant à l'article à analyser (en anglais)
+- Lancement du RAG
+- Génération de la réponse au format :
+  
+```
+Verdict: TRUE / FALSE
+Reason: <justification>
+```
 
-- Verdict : TRUE / FAKE 
-- Reason : La raison qui explique le verdict
+## Via streamlit
+
+ Disponible via la branche new_branch
+
+ ### Démarrage streamlit
+
+```
+streamlit run app.py
+```
+
+
