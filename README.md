@@ -142,6 +142,7 @@ rag-fake-news/
 - Il subsiste des différences d'architecture et de code en fonction des branches consultés.
 - La branche explo_get est dédiée à l'utilisation de détecteur depuis une interface en ligne de commande.
 - La branche développée par Emese (new_branch) est dédiée au développement d'une interface streamlit.
+  
 ## Procédures
 
 ## Via Command Line Interface (CLI)
@@ -179,6 +180,7 @@ python main.py
 ```
 
 Appuyer sur 1 pour la création de la base vectorielle
+
 Appuyer sur 2 pour faire une détection
 
 ## Détection via CLI
@@ -201,5 +203,11 @@ Reason: <justification>
 ```
 streamlit run app.py
 ```
+
+- Dans la zone de saisie de texte, saisir/coller un article à analyser
+- Régler le nombre de chunks de référence (panneau latéral gauche)
+- Cliquer sur le bouton "Lancer l'analyse"
+
+Résultat avec verdict + affichage des chunks de références avec label.
 
 
