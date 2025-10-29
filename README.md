@@ -138,10 +138,13 @@ rag-fake-news/
 └─ README.md
 
 ```
+## Branches
 
-- Il subsiste des différences d'architecture et de code en fonction des branches consultés.
-- La branche explo_get est dédiée à l'utilisation de détecteur depuis une interface en ligne de commande.
-- La branche développée par Emese (new_branch) est dédiée au développement d'une interface streamlit.
+ Il subsiste des différences d'architecture et de code en fonction des branches consultés.
+ 
+- La branche **explo_get** est dédiée à l'utilisation de détecteur depuis une interface en ligne de commande.
+- La branche développée par Emese (**new_branch**) est dédiée au développement d'une interface streamlit.
+- La branche développée par Saleh (**saleh-db**) est semblable à la branche **explo_get** mais développe sensiblement différemment.
   
 ## Procédures
 
@@ -210,4 +213,9 @@ streamlit run app.py
 
 Résultat avec verdict + affichage des chunks de références avec label.
 
+## Notes
+### Difficultés rencontrées
 
+- Il a été impossible pour Saleh de procéder à la vectorisation des données et à la mise en base vectorielle. Il a du faire le projet en parallèle, différemment de la branche principale, afin de pouvoir découvrir chaque point du brief.
+
+- Beaucoup de notions étaient nouvelles et, contrairement à ce que notre organisation prévoyait, nous n'avons pas vraiment partagé les tâches mais plutôt exploré le brief individuellement puis nous avons partagé le fruit de notre travail à chaque étape du projet.
