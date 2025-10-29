@@ -1,54 +1,15 @@
-from src.rag_pipeline import RAGPipeline
-from src.storage_chroma import ChromaStorage
-from datetime import datetime
-
-# === CONFIGURATION ===
-CHROMA_PATH = "data/vector_db"
-COLLECTION_NAME = "articles"
-EMBEDDING_MODEL = "all-minilm"
-GENERATION_MODEL = "llama3.2"
-
-
-def ask_user_article():
-    """
-    Demande à l'utilisateur d'entrer un article à analyser.
-    """
-    print("\n=== Analyse d'article ===")
-    print("Colle ton article ci-dessous (finis par une ligne vide) :")
-    lines = []
-    while True:
-        line = input()
-        if line.strip() == "":
-            break
-        lines.append(line)
-    return "\n".join(lines)
-
-
-def main():
-    print("=== Système RAG Fake News ===")
-
-    # Initialisation du pipeline RAG
-    rag = RAGPipeline(
-        chroma_path=CHROMA_PATH,
-        collection_name=COLLECTION_NAME,
-        embedding_model=EMBEDDING_MODEL
-    )
-
-    # Initialisation du stockage Chroma
-    storage = ChromaStorage(
-        persist_dir=CHROMA_PATH,
-        collection_name=COLLECTION_NAME
-    )
-
-    # Étape 1 : Récupération du texte utilisateur
-    article_text = ask_user_article()
-
-    # Étape 2 : Analyse via le pipeline RAG
-    print("\n[INFO] Lancement de l'analyse RAG...")
-    result = rag.analyze_article(article_text, model_name=GENERATION_MODEL, n_results=3)
-    print("\n====== RÉPONSE DU MODÈLE ======")
-    print(result.strip())
+from src.rag_pipeline import run_processing_pipeline, run_retrieval_and_rag
 
 
 if __name__ == "__main__":
-    main()
+    print("=== Fake News Detection System ===")
+    print(" Run Processing + Embedding + Insert into Chroma")
+    print(" Run Retrieval + RAG")
+    choice = input("\nChoose an option (1 or 2): ").strip()
+
+    if choice == "1":
+        run_processing_pipeline()
+    elif choice == "2":
+        run_retrieval_and_rag()
+    else:
+        print("Invalid choice. Please choose 1 or 2.")
