@@ -168,9 +168,16 @@ rag-fake-news/
 └─ README.md
 
 ```
-## Procédures
+## Lancement de l'application (CLI)
 
-### Traitement -> Vectorisation -> Création & Insertion des données
+```
+cd ~/fake_news_rag
+python main.py
+
+```
+## 2 options
+
+### 1 --- Traitement -> Vectorisation -> Création & Insertion des données
 
 La première étape consiste à créer un dossier data sous la forme :
 
@@ -192,27 +199,9 @@ Une fois le dossier data en place, il est désormais possible de lancer le pipel
 
 **Le processus de vectorisation est susceptible de prendre beaucoup temps (~1h) selon la puissance de votre machine.**
 
-```bash
-~/src
-python build_vector_db.py
+### 2 --- Détection à partir d'un texte utilisateur
 
-```
+- Requiert une base vectorielle dans un dossier data/vector_db
+- Requiert que la collection soit nommée "articles"
+- La détection se fera à partir du texte collé par l'utilisateur
 
-### Système RAG
-
-```bash
-~/fake_news_rag
-python main.py
-
-```
-
-Au lancement du script depuis le terminal, l'utilisateur devra copier l'article.
--> Appuyez sur ENTREE pour confirmer le collage
-
-Le système RAG se lance et va mettre en relation le prompt/article utilisateur avec la base vectorielle et retournera
-un ensemble de 3 documents similaires.
-
-Le corps de la réponse est construit ainsi :
-
-- Verdict : TRUE / FAKE 
-- Reason : La raison qui explique le verdict

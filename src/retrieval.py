@@ -44,7 +44,7 @@ class RAGAnalyzer:
         print(f"\n[INFO] {len(docs)} documents similaires retrouvés :")
         for d, dist in zip(docs, distances):
             print(f" - distance={dist:.4f}")
-            print(f" - extrait={d}")
+            # print(f" - extrait={d}")
             
         return docs, metas
     
