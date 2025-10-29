@@ -2,6 +2,7 @@
 Système RAG pour la détection de fake news 
 
 ## Structure projet (Modèle C4)
+```mermaid
 
 C4Component
 title Architecture du projet RAG Fake News
@@ -64,6 +65,7 @@ sequenceDiagram
     CLI-->>U: Affiche la reponse finale
 
 ```
+
 ## Diagramme de séquence
 
 sequenceDiagram
