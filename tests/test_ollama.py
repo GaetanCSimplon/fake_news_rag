@@ -6,6 +6,6 @@ for model in models:
 
 response = ollama.generate(
     model="llama3.2",
-    prompt="Samy est nul")
+    prompt="Bonjour")
 print(response["response"])
 
