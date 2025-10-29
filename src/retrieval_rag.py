@@ -12,8 +12,8 @@ collection_name = "articles"
 collection = client.get_collection(name=collection_name)
 
 # --- Input ---
-user_input = "Breaking news: Scientists discovered a new bird species in the Amazon rainforest. It has colorful feathers and a rare song pattern."
-
+#user_input = "Breaking news: Scientists discovered a new bird species in the Amazon rainforest. It has colorful feathers and a rare song pattern."
+user_input = ""
 # --- Cleaning ---
 def clean(text: str):
     text = text.lower().strip()
