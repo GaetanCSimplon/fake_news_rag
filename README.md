@@ -124,7 +124,7 @@ rag-fake-news/
 │  ├─ retrieval.py         # Module mise en relation entre prompt utilisateur et base vectorielle 
 │  ├─ rag_pipeline.py      # Pipeline RAG
 │  ├─ build_vector_db.py   # Pipeline de création de base vectorielle (traitement -> vectorisation -> insertion des données)
-│  └─ cli.py
+│  └─ cli.py               # Gestion en ligne de commande de l'application (démarré via main.py)
 ├─ tests/                    # Destiné aux tests
 │  ├─ test_preprocessing.py
 │  ├─ test_ollama.py         # Permet de vérifier la liste des modèles installés et de vérifier leur fonctionnement
@@ -132,7 +132,7 @@ rag-fake-news/
 │  ├─ test_retrieval.py
 │  └─ ...
 ├─ notebooks/
-├─ main.py                 # Script principal de lancement de détection
+├─ main.py                 # Script de lancement du CLI / Démarrage de l'app
 ├─ requirements.txt
 └─ README.md
 
