@@ -3,66 +3,39 @@ Système RAG pour la détection de fake news
 
 ## Structure projet (Modèle C4)
 
-### Visualisation figma
-[Schéma projet Fake News Rag](https://www.figma.com/board/Cv7FSdZAQXQ49bazw3m81t/Sans-titre?node-id=0-1&t=elai7Kr7pmQxHEUO-1)
+C4Component
+title Architecture du projet RAG Fake News
 
-### C1 - Contexte système
-```mermaid
-graph TD
-    U[Utilisateur] -->|Pose une question| RAG[RAG Fake News App]
-    RAG -->|Recherche contextuelle| LLM[Ollama LLM local]
-    RAG -->|Interroge| DB[ChromaDB - base vectorielle locale]
-    DB --> RAG
-    LLM --> RAG
-    RAG -->|Renvoie une reponse| U
+Person(user, "Utilisateur", "Personne lançant la détection via le CLI ou main.py")
 
-```
-### C2 - Containers
+System_Boundary(rag_system, "RAG Fake News System") {
 
-```mermaid
-graph TD
-    U[Utilisateur] --> CLI[Interface CLI]
-    CLI --> PRE[Preprocessing - Nettoyage et Tokenisation]
-    PRE --> EMB[Embedding - Vectorisation des textes]
-    EMB --> CHROMA[ChromaDB - Stockage vectoriel]
-    CHROMA --> RETRIEVAL[Retrieval - Recherche de contexte]
-    RETRIEVAL --> LLM[Ollama LLM local]
-    LLM --> REP[Réponse générée]
-    REP --> CLI
-```
+    Container(main, "main.py", "Script CLI principal", "Point d’entrée — lance la détection de fake news via le pipeline RAG")
+    Container(cli, "cli.py", "Interface CLI (optionnelle)", "Fournit des commandes pour la détection ou la génération de la base vectorielle")
 
-### C3 - Composants internes
+    Container_Boundary(src, "src/") {
+        Component(preprocessing, "preprocessing.py", "Nettoyage & préparation des textes (tokenisation, lowercasing, etc.)")
+        Component(embedding, "embedding.py", "Vectorisation (embeddings) des textes via Ollama ou autre modèle")
+        Component(storage, "storage_chroma.py", "Stockage des embeddings dans une base vectorielle Chroma")
+        Component(retrieval, "retrieval.py", "Recherche des documents similaires à une requête utilisateur")
+        Component(rag_pipeline, "rag_pipeline.py", "Pipeline complet RAG (retrieval + LLM + réponse)")
+        Component(build_db, "build_vector_db.py", "Pipeline pour construire la base vectorielle à partir de CSVs")
+    }
 
-```mermaid
-graph TD
-    subgraph src/
-        CLI[cli.py - Interface utilisateur]
-        PIPE[rage_pipeline.py - Coordination du flux RAG]
-        PRE[preprocessing.py - Nettoyage et tokenisation]
-        EMB[embedding.py - Génération des embeddings]
-        CH[storage_chroma.py - Gestion de la base vectorielle]
-        RETR[retrieval.py - Recherche des documents pertinents]
-    end
+    Container(data, "data/", "Répertoire de données", "Contient les fichiers bruts et traités")
+}
 
-    CLI --> PIPE
-    PIPE --> PRE
-    PIPE --> EMB
-    PIPE --> CH
-    PIPE --> RETR
-    PIPE --> CLI
-```
+Rel(user, main, "Lance une détection ou une commande CLI")
+Rel(main, rag_pipeline, "Appelle la pipeline RAG")
+Rel(rag_pipeline, retrieval, "Utilise pour récupérer les contextes similaires")
+Rel(retrieval, storage, "Interroge la base vectorielle Chroma")
+Rel(build_db, preprocessing, "Charge et nettoie les données")
+Rel(build_db, embedding, "Crée les embeddings")
+Rel(build_db, storage, "Insère les embeddings dans Chroma")
+Rel(cli, main, "Interface utilisateur alternative")
 
-### C4 - Vue Code
-
-```mermaid
-graph TD
-    CLI_PY[cli.py] --> RAG_PY[rag_pipeline.py]
-    RAG_PY --> RETRIEVE_PY[retrieval.py]
-    RAG_PY --> EMBED_PY[embedding.py]
-    RAG_PY --> STORE_PY[storage_chroma.py]
-    RAG_PY --> PREPROCESS_PY[preprocessing.py]
-
-```
+Rel(data, preprocessing, "Source des données (CSV bruts)")
+Rel(storage, data, "Persiste les vecteurs et métadonnées")
 
 ## Diagramme de séquence
 
@@ -91,6 +64,27 @@ sequenceDiagram
     CLI-->>U: Affiche la reponse finale
 
 ```
+## Diagramme de séquence
+
+sequenceDiagram
+    participant User as Utilisateur
+    participant Main as main.py / cli.py
+    participant RAG as rag_pipeline.py
+    participant Retrieval as retrieval.py
+    participant Storage as storage_chroma.py
+    participant Model as Modèle LLM (Ollama)
+    
+    User->>Main: Saisit un texte ou lance une détection
+    Main->>RAG: Appelle RAGPipeline.detect(text)
+    RAG->>Retrieval: Récupère les documents similaires
+    Retrieval->>Storage: Interroge la base vectorielle (Chroma)
+    Storage-->>Retrieval: Retourne les documents contextuels
+    Retrieval-->>RAG: Renvoie le contexte pertinent
+    RAG->>Model: Envoie la requête + contexte pour réponse
+    Model-->>RAG: Retourne une prédiction (FAKE / RÉEL)
+    RAG-->>Main: Renvoie le résultat de la détection
+    Main-->>User: Affiche "🟥 FAKE" ou "🟩 RÉEL"
+
 
 ## Installation
 
