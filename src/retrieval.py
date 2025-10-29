@@ -11,8 +11,8 @@ class RAGAnalyzer:
     Analyse d'un article en se basant sur les données de la base vectorielle.
     """
     def __init__(self, chroma_path="data/vector_db", 
-                 collection_name="news_articles", 
-                 embedding_model="all-minilm" ):
+                collection_name="news_articles", 
+                embedding_model="all-minilm" ):
         # Connexion à la base vectorielle
         self.client = chromadb.PersistentClient(path=chroma_path)
         self.collection = self.client.get_collection(collection_name)
@@ -104,9 +104,3 @@ class RAGAnalyzer:
             return response.response
         else:
             return str(response)
-
-
-    
-
-        
-
