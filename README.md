@@ -2,6 +2,7 @@
 Système RAG pour la détection de fake news 
 
 ## Structure projet (Modèle C4)
+
 ```mermaid
 
 C4Component
@@ -11,63 +12,35 @@ Person(user, "Utilisateur", "Personne lançant la détection via le CLI ou main.
 
 System_Boundary(rag_system, "RAG Fake News System") {
 
-    Container(main, "main.py", "Script CLI principal", "Point d’entrée — lance la détection de fake news via le pipeline RAG")
-    Container(cli, "cli.py", "Interface CLI (optionnelle)", "Fournit des commandes pour la détection ou la génération de la base vectorielle")
+    Container(main, "main.py", "Script CLI principal", "Point d'entree — lance la detection de fake news via le pipeline RAG")
+    Container(cli, "cli.py", "Interface CLI", "Fournit des commandes pour la detection ou la generation de la base vectorielle")
 
     Container_Boundary(src, "src/") {
-        Component(preprocessing, "preprocessing.py", "Nettoyage & préparation des textes (tokenisation, lowercasing, etc.)")
-        Component(embedding, "embedding.py", "Vectorisation (embeddings) des textes via Ollama ou autre modèle")
+        Component(preprocessing, "preprocessing.py", "Nettoyage et preparation des textes")
+        Component(embedding, "embedding.py", "Vectorisation des textes via Ollama ou autre modele")
         Component(storage, "storage_chroma.py", "Stockage des embeddings dans une base vectorielle Chroma")
-        Component(retrieval, "retrieval.py", "Recherche des documents similaires à une requête utilisateur")
-        Component(rag_pipeline, "rag_pipeline.py", "Pipeline complet RAG (retrieval + LLM + réponse)")
-        Component(build_db, "build_vector_db.py", "Pipeline pour construire la base vectorielle à partir de CSVs")
+        Component(retrieval, "retrieval.py", "Recherche des documents similaires a une requete utilisateur")
+        Component(rag_pipeline, "rag_pipeline.py", "Pipeline complet RAG (retrieval + LLM + reponse)")
+        Component(build_db, "build_vector_db.py", "Pipeline pour construire la base vectorielle a partir de CSVs")
     }
 
-    Container(data, "data/", "Répertoire de données", "Contient les fichiers bruts et traités")
+    Container(data, "data/", "Repertoire de donnees", "Contient les fichiers bruts et traites")
 }
 
-Rel(user, main, "Lance une détection ou une commande CLI")
+Rel(user, main, "Lance une detection ou une commande CLI")
 Rel(main, rag_pipeline, "Appelle la pipeline RAG")
-Rel(rag_pipeline, retrieval, "Utilise pour récupérer les contextes similaires")
+Rel(rag_pipeline, retrieval, "Utilise pour recuperer les contextes similaires")
 Rel(retrieval, storage, "Interroge la base vectorielle Chroma")
-Rel(build_db, preprocessing, "Charge et nettoie les données")
-Rel(build_db, embedding, "Crée les embeddings")
-Rel(build_db, storage, "Insère les embeddings dans Chroma")
+Rel(build_db, preprocessing, "Charge et nettoie les donnees")
+Rel(build_db, embedding, "Cree les embeddings")
+Rel(build_db, storage, "Insere les embeddings dans Chroma")
 Rel(cli, main, "Interface utilisateur alternative")
-
-Rel(data, preprocessing, "Source des données (CSV bruts)")
-Rel(storage, data, "Persiste les vecteurs et métadonnées")
-
-## Diagramme de séquence
-
-```mermaid
-sequenceDiagram
-    participant U as Utilisateur
-    participant CLI as Interface CLI / App
-    participant PRE as Preprocessing
-    participant CH as ChromaDB
-    participant EMB as Embeddings (Ollama)
-    participant LLM as LLM (Ollama)
-
-    U->>CLI: Saisit une question
-    CLI->>PRE: Nettoie et tokenise la requete
-    PRE-->>CLI: Requete pretraitee
-
-    CLI->>EMB: Genere un vecteur pour la requete
-    EMB-->>CLI: Retourne le vecteur d embedding
-
-    CLI->>CH: Recherche les documents similaires
-    CH-->>CLI: Retourne les passages les plus pertinents
-
-    CLI->>LLM: Envoie la question + contexte pertinent
-    LLM-->>CLI: Genere une reponse contextuelle
-
-    CLI-->>U: Affiche la reponse finale
-
+Rel(data, preprocessing, "Source des donnees CSV")
+Rel(storage, data, "Persiste les vecteurs et metadonnees")
 ```
 
 ## Diagramme de séquence
-
+```mermaid
 sequenceDiagram
     participant User as Utilisateur
     participant Main as main.py / cli.py
@@ -86,7 +59,7 @@ sequenceDiagram
     Model-->>RAG: Retourne une prédiction (FAKE / RÉEL)
     RAG-->>Main: Renvoie le résultat de la détection
     Main-->>User: Affiche "🟥 FAKE" ou "🟩 RÉEL"
-
+```
 
 ## Installation
 
