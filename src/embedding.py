@@ -30,56 +30,60 @@ class OllamaEmbedder:
         print(f"[INIT] OllamaEmbedder initialisé avec modèle='{model_name}', chunk_size={chunk_size}, overlap={overlap}")
 
     # -----------------------------
-    # 1️⃣ Découpage du texte en chunks
+    #  Découpage du texte en chunks
     # -----------------------------
     def split_text(self, text: str) -> List[str]:
         """Découpe un texte en plusieurs chunks avec chevauchement."""
-        if not isinstance(text, str) or not text.strip():
+        if not isinstance(text, str) or not text.strip(): # Vérifie que le texte est une chaine non vide
             return []
 
-        words = text.split()
-        chunks, start = [], 0
+        words = text.split() # Transforme le texte en liste de mots
+        chunks, start = [], 0 
 
         while start < len(words):
             end = start + self.chunk_size
             chunk = " ".join(words[start:end])
-            if len(chunk.split()) > 10:
+            if len(chunk.split()) > 10: # Ignore les segments de moins de 10 mots
                 chunks.append(chunk)
-            if end >= len(words):
+            if end >= len(words): # Fin de la boucle si on arrive à la fin du texte à chunker
                 break
-            start += self.chunk_size - self.overlap
+            start += self.chunk_size - self.overlap  # Pointeur start avance en prenant en compte l'overlap
 
         return chunks
 
     # -----------------------------
-    # 2️⃣ Fonction utilitaire : normalisation L2
+    # Fonction utilitaire : normalisation L2
     # -----------------------------
     def normalize_vector(self, vec: List[float]) -> List[float]:
         """Normalise un vecteur (L2)."""
-        arr = np.array(vec)
-        norm = np.linalg.norm(arr)
+        arr = np.array(vec) # Transforme les vecteurs en objet numpy array 
+        norm = np.linalg.norm(arr) # Application de la fonction de normalisation L2 (distance euclidienne)
         return (arr / norm).tolist() if norm > 0 else arr.tolist()
 
     # -----------------------------
-    # 3️⃣ Vectorisation avec parallélisation
+    # Vectorisation avec parallélisation
     # -----------------------------
     def embed_texts(self, texts: List[str], max_workers: int = 4) -> List[List[float]]:
         """Crée des embeddings normalisés pour une liste de textes (en parallèle)."""
 
         def embed_one(text):
+            """
+            Appelle l'embedder et retourne le vecteur normalisé
+            """
             response = ollama.embeddings(model=self.model_name, prompt=text)
             return self.normalize_vector(response.embedding)
 
         embeddings = []
-        with ThreadPoolExecutor(max_workers=max_workers) as executor:
-            futures = {executor.submit(embed_one, text): text for text in texts}
-            for f in tqdm(as_completed(futures), total=len(futures), desc="Vectorisation parallèle"):
-                embeddings.append(f.result())
+        with ThreadPoolExecutor(max_workers=max_workers) as executor: # permet d'executer plusieurs vectorisation (embed_one) en parallèle
+            futures = {executor.submit(embed_one, text): text for text in texts} # Crée un dict (clé = tâche (objet Future), valeur = texte correpsondant)
+            # executor.submit() lance la fonction embed_one dans un thread parallèle
+            for f in tqdm(as_completed(futures), total=len(futures), desc="Vectorisation parallèle"): 
+                embeddings.append(f.result()) # f.result() = vecteur normalisé renvoyé par la méthode embed_one()
 
         return embeddings
 
     # -----------------------------
-    # 4️⃣ Application à un DataFrame complet
+    # Application à un DataFrame complet
     # -----------------------------
     def embed_dataframe(self, df: pd.DataFrame, text_col: str = "text", output_path: str = None) -> pd.DataFrame:
         """
@@ -93,31 +97,31 @@ class OllamaEmbedder:
         print(f"[INFO] Démarrage de la génération d'embeddings sur {len(df)} articles...")
 
         # Étape 1 : découpage en chunks
-        df["chunks"] = df[text_col].progress_apply(self.split_text)
+        df["chunks"] = df[text_col].progress_apply(self.split_text) # utilisation d'apply pour faire appel à la méthode split_text et stockage dans la nouvelle colonne 'chunks'
 
         # Étape 2 : création du DataFrame de chunks
-        all_chunks = []
+        all_chunks = [] # Liste de dictionnaire qui contient les données de chaque article
         for i, row in df.iterrows():
             for chunk in row["chunks"]:
                 all_chunks.append({
                     "index_article": i,
                     "chunk": chunk,
-                    "label": row.get("label", None),
+                    "label": row.get("label", None), # Si aucun label, renvoie None
                     "subject": row.get("subject", None),
                     "date": row.get("date", None),
                 })
 
-        chunks_df = pd.DataFrame(all_chunks)
+        chunks_df = pd.DataFrame(all_chunks) # Conversion de la liste d'objets structurés en dataframe
         if chunks_df.empty:
             print("[WARNING] Aucun chunk généré. Vérifie chunk_size / overlap.")
             return pd.DataFrame()
 
         # Étape 3 : vectorisation
-        chunks_df["embedding"] = self.embed_texts(chunks_df["chunk"].tolist())
+        chunks_df["embedding"] = self.embed_texts(chunks_df["chunk"].tolist()) # Création de la colonne avec les vecteurs (embedding + normalisation)
 
         # Étape 4 : sauvegarde progressive
-        if output_path:
-            os.makedirs(os.path.dirname(output_path), exist_ok=True)
+        if output_path: 
+            os.makedirs(os.path.dirname(output_path), exist_ok=True) 
             chunks_df.to_csv(output_path, index=False)
             print(f"[SAVE] Fichier partiel sauvegardé → {output_path}")
 
