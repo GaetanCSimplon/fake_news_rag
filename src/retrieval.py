@@ -1,4 +1,4 @@
-import numpy as np
+import numpy as np  
 import ollama
 import chromadb
 # from chromadb.utils import embedding_functions
@@ -36,7 +36,7 @@ class RAGAnalyzer:
         """
         Recherche les documents les plus similaires à un vecteur
         """
-        results = self.collection.query(query_embeddings=[query_vector], n_results=n_results)
+        results = self.collection.query(query_embeddings=[query_vector], n_results=n_results) # Envoie une requête pour trouver les vecteurs similaires dans la base vectorielle 
         docs = results["documents"][0]
         metas = results["metadatas"][0]
         distances = results["distances"][0]
@@ -56,6 +56,12 @@ class RAGAnalyzer:
         context = "\n\n".join([f"[{m.get('date', 'unknown')}] ({m.get('label', '?')}): {doc}" for doc, m in zip(docs, metas)])
         print(f"[CONTEXT] {context}")
         return context
+    # Version sous forme de boucle for
+    # liste_temp = [] # Liste de stockage de la chaine de caractères finale d'un article pertinent trouvé
+        # for doc, m in zip(docs, metas): # on boucle sur les textes et les métadonnées données associées
+        #     texte = f"[{m.get('date', 'unknown')}] ({m.get('label', '?')}): {doc}" # on construit la chaine de caractères en sortie
+        #     liste_temp.append(texte) # stockage de la chaine de caractères dans la list_temp
+        # Au final, ce qui sera retourné est le contexte qui viendra alimenté le prompt pour le LLM
     
     # Création du prompt
     def build_prompt(self, user_text: str, context: str) -> str:

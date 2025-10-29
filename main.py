@@ -52,7 +52,6 @@ def build_parser() -> argparse.ArgumentParser:
     p_rag.add_argument("--n-results", type=int, default=3)
     src = p_rag.add_mutually_exclusive_group()
     src.add_argument("--text", help="Texte de l'article à analyser")
-    src.add_argument("--file", help="Chemin d'un fichier texte contenant l'article")
 
     return parser
 
@@ -88,7 +87,7 @@ def main(argv: list[str] | None = None):
                 collection_name=COLLECTION_NAME,
                 embedding_model=EMBEDDING_MODEL,
                 generation_model=GENERATION_MODEL,
-                n_results=3,
+                n_results=5,
             )
             return
         else:
@@ -119,7 +118,6 @@ def main(argv: list[str] | None = None):
             generation_model=args.generation_model,
             n_results=args.n_results,
             text=args.text,
-            file=args.file,
         )
     else:
         parser.print_help()

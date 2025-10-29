@@ -109,13 +109,11 @@ def run_rag_system(
     generation_model: str = "llama3.2",
     n_results: int = 3,
     text: str | None = None,
-    file: str | None = None,
 ):
     """Lance le système RAG pour analyser un texte.
 
     Source du texte:
     - `--text` (argument direct)
-    - `--file` (fichier texte)
     - entrée interactive (stdin) si aucune source n'est fournie
     """
     print("[CLI] Lancement du système RAG...")
@@ -129,8 +127,6 @@ def run_rag_system(
     # Choix de la source du texte à analyser
     if text:
         user_text = text
-    elif file:
-        user_text = Path(file).read_text(encoding="utf-8")
     else:
         print("\n=== Analyse d'article ===")
         print("Collez votre article puis validez par une ligne vide :")
@@ -146,7 +142,7 @@ def run_rag_system(
         user_text = "\n".join(lines)
 
     if not user_text.strip():
-        print("[ERREUR] Aucun texte fourni. Utilisez --text ou --file, ou collez un article.")
+        print("[ERREUR] Aucun texte fourni. Collez un article.")
         sys.exit(2)
 
     # Envoi au pipeline RAG pour vectorisation requête → recherche → génération
@@ -197,7 +193,6 @@ def build_parser() -> argparse.ArgumentParser:
     # Une seule source de texte possible
     src = p_rag.add_mutually_exclusive_group()
     src.add_argument("--text", help="Texte de l'article à analyser")
-    src.add_argument("--file", help="Chemin d'un fichier texte contenant l'article")
 
     return parser
 
@@ -232,7 +227,6 @@ def main(argv: list[str] | None = None):
             generation_model=args.generation_model,
             n_results=args.n_results,
             text=args.text,
-            file=args.file,
         )
     else:
         parser.print_help()
