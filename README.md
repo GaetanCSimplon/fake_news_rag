@@ -58,7 +58,7 @@ sequenceDiagram
     RAG->>Model: Envoie la requête + contexte pour réponse
     Model-->>RAG: Retourne une prédiction (FAKE / RÉEL)
     RAG-->>Main: Renvoie le résultat de la détection
-    Main-->>User: Affiche "🟥 FAKE" ou "🟩 RÉEL"
+    Main-->>User: Affiche "FAKE" ou "RÉEL"
 ```
 
 ## Installation
