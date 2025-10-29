@@ -80,13 +80,13 @@ def run_retrieval_and_rag():
     try:
         collection = client.get_collection(name=collection_name)
     except chromadb.errors.NotFoundError:
-        print(f"[ERROR] ❌ Collection '{collection_name}' does not exist. Run processing first.")
+        print(f"[ERROR]  Collection '{collection_name}' does not exist. Run processing first.")
         return
 
     while True:
-        user_input = input("\n🗞️ Enter your article text (or type 'exit' to quit): ").strip()
+        user_input = input("\n Enter your article text (or type 'exit' to quit): ").strip()
         if user_input.lower() in ["exit", "quit"]:
-            print("\n👋 Exiting RAG session. Goodbye!\n")
+            print("\n Exiting RAG session. Goodbye!\n")
             break
 
         # --- CLEAN ---
@@ -136,14 +136,14 @@ def run_retrieval_and_rag():
             "Start now.\n"
         )
 
-        print("\n🧠 Generating model response...\n")
+        print("\n Generating model response...\n")
 
         output = ollama.generate(model="phi3:mini", prompt=prompt)
-        print("\n✅ MODEL RESPONSE:\n")
+        print("\n MODEL RESPONSE:\n")
         print(output.get("response", "No response generated."))
 
         # Ask if user wants to continue
-        again = input("\n🔁 Do you want to analyze another article? (y/n): ").strip().lower()
+        again = input("\n Do you want to analyze another article? (y/n): ").strip().lower()
         if again != "y":
-            print("\n👋 Exiting RAG session. Goodbye!\n")
+            print("\n Exiting RAG session. Goodbye!\n")
             break

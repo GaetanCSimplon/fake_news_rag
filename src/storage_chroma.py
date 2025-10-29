@@ -21,7 +21,6 @@ class ChromaStorage:
         self.client = chromadb.PersistentClient(path=persist_dir)
         self.collection_name = collection_name
 
-        # Vérifie si la collection existe déjà, sinon la crée
         existing = [c.name for c in self.client.list_collections()]
         if collection_name in existing:
             self.collection = self.client.get_collection(collection_name)
@@ -30,9 +29,7 @@ class ChromaStorage:
             self.collection = self.client.create_collection(collection_name)
             print(f"[INFO] Nouvelle collection '{collection_name}' créée dans {persist_dir}")
 
-    # --------------------------------------------------
-    # Chargement du CSV contenant les embeddings
-    # --------------------------------------------------
+
     def load_embedded_data(self, csv_path: str) -> pd.DataFrame:
         """
         Charge le CSV contenant les chunks et embeddings.
@@ -46,9 +43,7 @@ class ChromaStorage:
         print(f"[INFO] {len(df)} lignes chargées depuis {csv_path}")
         return df
 
-    # --------------------------------------------------
-    # Insertion des embeddings dans Chroma
-    # --------------------------------------------------
+
     def insert_into_chroma(self, df: pd.DataFrame, batch_size: int = 100):
         """
         Insère les données vectorielles dans ChromaDB par batchs.
@@ -67,7 +62,6 @@ class ChromaStorage:
             documents = batch["chunk"].tolist()
             embeddings = batch["embedding"].tolist()
 
-            # Métadonnées optionnelles
             metadatas = batch[["index_article", "label", "subject", "date"]].to_dict(orient="records")
 
             self.collection.add(

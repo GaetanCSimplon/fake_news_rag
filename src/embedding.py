@@ -29,9 +29,7 @@ class OllamaEmbedder:
         self.batch_size = batch_size
         print(f"[INIT] OllamaEmbedder initialisé avec modèle='{model_name}', chunk_size={chunk_size}, overlap={overlap}")
 
-    # -----------------------------
-    # 1️⃣ Découpage du texte en chunks
-    # -----------------------------
+
     def split_text(self, text: str) -> List[str]:
         """Découpe un texte en plusieurs chunks avec chevauchement."""
         if not isinstance(text, str) or not text.strip():
@@ -51,18 +49,14 @@ class OllamaEmbedder:
 
         return chunks
 
-    # -----------------------------
-    # 2️⃣ Fonction utilitaire : normalisation L2
-    # -----------------------------
+
     def normalize_vector(self, vec: List[float]) -> List[float]:
         """Normalise un vecteur (L2)."""
         arr = np.array(vec)
         norm = np.linalg.norm(arr)
         return (arr / norm).tolist() if norm > 0 else arr.tolist()
 
-    # -----------------------------
-    # 3️⃣ Vectorisation avec parallélisation
-    # -----------------------------
+
     def embed_texts(self, texts: List[str], max_workers: int = 4) -> List[List[float]]:
         """Crée des embeddings normalisés pour une liste de textes (en parallèle)."""
 
@@ -78,9 +72,7 @@ class OllamaEmbedder:
 
         return embeddings
 
-    # -----------------------------
-    # 4️⃣ Application à un DataFrame complet
-    # -----------------------------
+
     def embed_dataframe(self, df: pd.DataFrame, text_col: str = "text", output_path: str = None) -> pd.DataFrame:
         """
         Applique le chunking + embedding à un DataFrame entier.
@@ -92,10 +84,8 @@ class OllamaEmbedder:
         tqdm.pandas()
         print(f"[INFO] Démarrage de la génération d'embeddings sur {len(df)} articles...")
 
-        # Étape 1 : découpage en chunks
         df["chunks"] = df[text_col].progress_apply(self.split_text)
 
-        # Étape 2 : création du DataFrame de chunks
         all_chunks = []
         for i, row in df.iterrows():
             for chunk in row["chunks"]:
@@ -112,10 +102,8 @@ class OllamaEmbedder:
             print("[WARNING] Aucun chunk généré. Vérifie chunk_size / overlap.")
             return pd.DataFrame()
 
-        # Étape 3 : vectorisation
         chunks_df["embedding"] = self.embed_texts(chunks_df["chunk"].tolist())
 
-        # Étape 4 : sauvegarde progressive
         if output_path:
             os.makedirs(os.path.dirname(output_path), exist_ok=True)
             chunks_df.to_csv(output_path, index=False)
