@@ -167,5 +167,3 @@ class DatasetMerger:
         combined = pd.concat(dfs, ignore_index=True)
         print(f"[INFO] Merge done.")
         return combined
-        
-    
