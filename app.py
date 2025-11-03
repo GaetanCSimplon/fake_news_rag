@@ -51,15 +51,15 @@ st.markdown(
 # BARRE LATÉRALE ET PARAMÈTRES
 st.sidebar.header("Statut & Paramètres")
 
-if rag_pipeline:
-    try:
-        # 🟢 Appel la collection via la méthode get_collection()
-        count = rag_pipeline.retriever.get_collection().count()
-        st.sidebar.success(f"✅ DB Chroma en Ligne : {count} chunks stockés")
-    except Exception:
-        st.sidebar.error("❌ DB Chroma : Erreur de connexion/collection.")
-else:
-    st.sidebar.warning("Le RAG Pipeline n'a pas pu être initialisé.")
+# if rag_pipeline:
+#     try:
+#         # 🟢 Appel la collection via la méthode get_collection()
+#         count = rag_pipeline.retriever.get_collection().count()
+#         st.sidebar.success(f"✅ DB Chroma en Ligne : {count} chunks stockés")
+#     except Exception:
+#         st.sidebar.error("❌ DB Chroma : Erreur de connexion/collection.")
+# else:
+#     st.sidebar.warning("Le RAG Pipeline n'a pas pu être initialisé.")
 
 # Statut de la DB
 if rag_pipeline and hasattr(rag_pipeline.retriever, "collection"):
